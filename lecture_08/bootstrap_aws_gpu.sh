@@ -1,13 +1,12 @@
+HERE IS MY AWESOME CHANGE
+
 # AMI: ubuntu-trusty-14.04-amd64-server-20150506 (ami-76b2a71e)
 
 tmux -S /tmp/mdagost new-session -s mdagost
 
 sudo apt-get update
-sudo apt-get install -y htop emacs git python-setuptools python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libatlas3-base build-essential g++ libhdf5-7 libhdf5-dev clang pkg-config libxft2 libxft2-dev build-essential
-sudo easy_install pip
-
+sudo apt-get install -y htop emacs git python-setuptools python-dev libatlas-dev libatlas-base-dev liblapack-dev g
 # CUDA instructions here: https://github.com/BVLC/caffe/wiki/Install-Caffe-on-EC2-from-scratch-%28Ubuntu,-CUDA-7,-cuDNN%29
-wget http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/cuda_7.0.28_linux.run
 chmod +x cuda_7.0.28_linux.run
 mkdir nvidia_installers
 ./cuda_7.0.28_linux.run -extract=`pwd`/nvidia_installers
