@@ -1,0 +1,116 @@
+---
+title: 'Lecture 4: Regularization and glmnet'
+author: "Michelangelo D'Agostino"
+date: "April 19, 2015"
+output: html_document
+---
+
+Let's load our libraries:
+
+```{r}
+library(ISLR)
+library(glmnet)
+```
+
+`glmnet` takes a matrix of predictors, so let's construct one and leave out the `Salary` variable that we're trying to predict:
+
+```{r}
+Hitters<-Hitters[complete.cases(Hitters), ]
+X<-model.matrix(Salary~., data=Hitters)[, -1]
+median_salary<-median(Hitters$Salary)
+y_median<-as.numeric(Hitters$Salary >= median_salary)
+```
+
+
+`glmnet` uses a regularization penalty of the "elasticnet" form 
+
+$$ \frac{1-\alpha}{2} ||\beta||_2^2 + \alpha ||\beta||_1 $$
+
+so $\alpha=1$ corresponds to the lasso penalty and $\alpha=0$ corresponds to ridge penalty.  Let's fit a lasso classification model for whether the salary is greater than the median:  
+
+````{r}
+c.model.lasso<-glmnet(X, y_median, family="binomial", alpha=1)
+```
+
+This will show us the coefficients as a function of the norm (which is inverse to $\lambda$).  Notice the number of non-zero coefficients along the top axis:
+
+```{r}
+plot(c.model.lasso)
+```
+
+Similarly, let's fit a lasso regression model for the salary itself:
+
+````{r}
+r.model.lasso<-glmnet(X, Hitters$Salary, family="gaussian", alpha=1)
+```
+
+```{r}
+plot(r.model.lasso)
+```
+
+We can use the `cv.glmnet` function to do cross-validation and select the best value of $\lambda$ for us:
+
+````{r}
+c.cv.model.lasso<-cv.glmnet(X, y_median, family="binomial", alpha=1, nfolds=10) # can also try type.measure="class"
+r.cv.model.lasso<-cv.glmnet(X, Hitters$Salary, family="gaussian", alpha=1, nfolds=10)
+```
+
+We can see the out-of-sample error as a function of $\lambda$ (notice the number of non-zero coefficients along the top axis):
+
+```{r}
+plot(c.cv.model.lasso)
+```
+
+```{r}
+plot(r.cv.model.lasso)
+```
+
+Finally, let's see how to get the coefficients out.  Let's take the classification models as an example:
+
+```{r}
+attributes(c.model.lasso)
+```
+
+```{r}
+c.model.lasso$lambda
+```
+
+
+```{r}
+c.model.lasso$beta
+```
+
+On the right, lambda is smallest, so more variables are included with larger coefficients.  On the left, labmda is smaller, so fewer variables are included with smaller coefficients.
+
+Let's take the 25th value of $\lambda$ as an example:
+
+```{r}
+c.model.lasso$beta[, 25]
+```
+
+
+And finally, let's run a classification model with the ridge penalty.  Notice that all features are always included, but their size shrinks:
+
+````{r}
+c.model.ridge<-glmnet(X, y_median, family="binomial", alpha=0)
+```
+
+This will show us the coefficients as a function of the norm (which is inverse to $\lambda$):
+
+```{r}
+plot(c.model.ridge)
+```
+
+````{r}
+c.cv.model.ridge<-cv.glmnet(X, y_median, family="binomial", alpha=0, nfolds=10)
+```
+
+```{r}
+plot(c.cv.model.ridge)
+```
+
+
+
+
+
+
