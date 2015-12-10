@@ -1,6 +1,6 @@
 # AMI: ubuntu-trusty-14.04-amd64-server-20150506 (ami-76b2a71e)
 
-tmux -S /tmp/mdagost new-session -s mdagost
+tmux -S /tmp/temp_brandon new-session -s mdagost
 
 sudo apt-get update
 sudo apt-get install -y htop emacs git python-setuptools python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libatlas3-base build-essential g++ libhdf5-7 libhdf5-dev clang pkg-config libxft2 libxft2-dev build-essential
